@@ -1,0 +1,24 @@
+Imports System.Data.SqlClient
+
+Public Class LoginForm
+    Dim con As New SqlConnection("Data Source=YOUR_SERVER;Initial Catalog=YOUR_DATABASE;Integrated Security=True")
+    
+    Private Sub btnLogin_Click(sender As Object, e As EventArgs) Handles btnLogin.Click
+        Dim cmd As New SqlCommand("SELECT COUNT(*) FROM Users WHERE Username=@username AND Password=@password", con)
+        cmd.Parameters.AddWithValue("@username", txtUsername.Text)
+        cmd.Parameters.AddWithValue("@password", txtPassword.Text)
+
+        con.Open()
+        Dim count As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+        con.Close()
+
+        If count > 0 Then
+            MessageBox.Show("Login Successful!")
+            Me.Hide()
+            Dim mainForm As New MainForm() ' Replace with your main form
+            mainForm.Show()
+        Else
+            MessageBox.Show("Invalid Username or Password", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
+    End Sub
+End Class
